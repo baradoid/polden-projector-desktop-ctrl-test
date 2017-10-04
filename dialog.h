@@ -15,6 +15,11 @@ public:
     explicit Dialog(QWidget *parent = 0);
     ~Dialog();
 
+private slots:
+    void on_pushButtonPowerOnAll_clicked();
+
+    void on_pushButtonPowerOffAll_clicked();
+
 private:
     Ui::Dialog *ui;
 };
