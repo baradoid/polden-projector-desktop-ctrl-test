@@ -10,7 +10,9 @@ Dialog::Dialog(QWidget *parent) :
 {
     ui->setupUi(this);
     s = new QUdpSocket(this);
-    s->bind(QHostAddress::LocalHost, 8053);
+    if(s->bind(QHostAddress::LocalHost, 8053) == false){
+        qDebug("bind fail");
+    }
     connect(s, SIGNAL(readyRead()), this, SLOT(handleUdpReadyRead()));
 
     QString destIp = settings.value("destIp", QString("localhost")).toString();
@@ -45,25 +47,28 @@ Dialog::~Dialog()
 
 void Dialog::on_pushButtonPowerOnAll_clicked()
 {                
+    QString destIp = ui->lineEditDestIp->text();
     int destPort = ui->lineEditDestPort->text().toInt();
     QString msg("pon_all");
-    if(s->writeDatagram(msg.toLatin1(), QHostAddress::LocalHost, destPort) == -1)
+    if(s->writeDatagram(msg.toLatin1(), QHostAddress(destIp), destPort) == -1)
         qDebug() << "sendErr";
 }
 
 void Dialog::on_pushButtonPowerOffAll_clicked()
-{               
+{
+    QString destIp = ui->lineEditDestIp->text();
     int destPort = ui->lineEditDestPort->text().toInt();
     QString msg("poff_all");
-    if(s->writeDatagram(msg.toLatin1(), QHostAddress::LocalHost, destPort) == -1)
+    if(s->writeDatagram(msg.toLatin1(), QHostAddress(destIp), destPort) == -1)
         qDebug() << "sendErr";
 }
 
 void Dialog::on_pushButtonStatReq_clicked()
-{
+{ 
+    QString destIp = ui->lineEditDestIp->text();
     int destPort = ui->lineEditDestPort->text().toInt();
     QString msg("stat?");
-    if(s->writeDatagram(msg.toLatin1(), QHostAddress::LocalHost, destPort) == -1)
+    if(s->writeDatagram(msg.toLatin1(), QHostAddress(destIp), destPort) == -1)
         qDebug() << "sendErr";
 }
 
@@ -77,17 +82,19 @@ void Dialog::handleUdpReadyRead()
     }
 }
 void Dialog::handlePushPon(int id)
-{
+{   
+    QString destIp = ui->lineEditDestIp->text();
     int destPort = ui->lineEditDestPort->text().toInt();
     QString msg = QString("pon_%1").arg(id);
-    if(s->writeDatagram(msg.toLatin1(), QHostAddress::LocalHost, destPort) == -1)
+    if(s->writeDatagram(msg.toLatin1(), QHostAddress(destIp), destPort) == -1)
         qDebug() << "sendErr";
 }
 
 void Dialog::handlePushPoff(int id)
 {
+    QString destIp = ui->lineEditDestIp->text();
     int destPort = ui->lineEditDestPort->text().toInt();
     QString msg = QString("poff_%1").arg(id);
-    if(s->writeDatagram(msg.toLatin1(), QHostAddress::LocalHost, destPort) == -1)
+    if(s->writeDatagram(msg.toLatin1(), QHostAddress(destIp), destPort) == -1)
         qDebug() << "sendErr";
 }
