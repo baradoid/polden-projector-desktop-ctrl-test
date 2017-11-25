@@ -23,6 +23,7 @@ private slots:
     void on_pushButtonStatReq_clicked();
     void handleUdpReadyRead();
 
+
 private:
     Ui::Dialog *ui;
     QUdpSocket *s;
@@ -30,6 +31,8 @@ private:
     void handlePushPoff(int);
 
     QSettings settings;
+
+    void turnReleSonOff(QString, int, bool);
 
 
 };

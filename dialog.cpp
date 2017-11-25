@@ -35,6 +35,23 @@ Dialog::Dialog(QWidget *parent) :
     connect(ui->pushButtonPoff4, &QPushButton::clicked, [this](){handlePushPoff(3);});
     connect(ui->pushButtonPoff5, &QPushButton::clicked, [this](){handlePushPoff(4);});
 
+
+    destIp = settings.value("sonoffDestIp", QString("127.0.0.1")).toString();
+    destPort = settings.value("destPort", 8053).toInt();
+    ui->lineEditSonoffDestIp->setText(destIp);
+    ui->lineEditSonoffDestPort->setText(QString("%1").arg(destPort));
+
+    connect(ui->pushButtonDev1On, &QPushButton::clicked,
+        [this](){
+        QString devId = ui->lineEditDeviceId1->text();
+        turnReleSonOff(devId, 0, true);
+        });
+
+    connect(ui->pushButtonDev1Off, &QPushButton::clicked,
+        [this](){
+        QString devId = ui->lineEditDeviceId1->text();
+        turnReleSonOff(devId, 0, false);
+        });
 }
 
 Dialog::~Dialog()
@@ -97,4 +114,10 @@ void Dialog::handlePushPoff(int id)
     QString msg = QString("poff_%1").arg(id);
     if(s->writeDatagram(msg.toLatin1(), QHostAddress(destIp), destPort) == -1)
         qDebug() << "sendErr";
+}
+
+
+void Dialog::turnReleSonOff(QString devId, int releId, bool ena)
+{
+
 }
