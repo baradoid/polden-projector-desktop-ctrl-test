@@ -119,5 +119,14 @@ void Dialog::handlePushPoff(int id)
 
 void Dialog::turnReleSonOff(QString devId, int releId, bool ena)
 {
+    QString destIp = ui->lineEditSonoffDestIp->text();
+    int destPort = ui->lineEditSonoffDestPort->text().toInt();
+    QString devIdStr = ui->lineEditDeviceId1->text();
+
+    QString msg;
+    msg.sprintf("%s:%d->%c", devIdStr.toLocal8Bit().constData(), releId, ena?'e':'d');
+    QUdpSocket sock;
+    if(sock.writeDatagram(msg.toLatin1(), QHostAddress(destIp), destPort) == -1)
+        qDebug() << "sendErr";
 
 }
